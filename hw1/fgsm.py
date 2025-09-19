@@ -36,11 +36,17 @@ loss.backward()
 # your code here
 # adv_x should be computed from x according to the fgsm-style perturbation such that the new class of xBar is the target class t above
 # hint: you can compute the gradient of the loss w.r.t to x as x.grad
-adv_x = TODO
 
+print("Initial input:", x)
+signed_loss = torch.sign(x.grad)
+adv_x = x - eps * signed_loss
 new_class = N(adv_x).argmax(dim=1).item()
+if new_class == t:
+    print("Attack successful")
+print("Adversial input:", adv_x)
+
 print("New Class: ", new_class)
 assert(new_class == t)
 # it is not enough that adv_x is classified as t. We also need to make sure it is 'close' to the original x. 
-print(torch.norm((x-adv_x),  p=float('inf')).data)
+print("Norm of difference:",torch.norm((x-adv_x),  p=float('inf')).data)
 assert( torch.norm((x-adv_x), p=float('inf')) <= epsReal)
